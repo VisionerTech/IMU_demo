@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 457eda74c038d4850bc28f819eb99820
+PluginImporter:
+  serializedVersion: 1
+  iconMap: {}
+  executionOrder: {}
+  platformData:
+    Android:
+      enabled: 1
+      settings: {}
+    Any:
+      enabled: 0
+      settings: {}
+  userData: 
+  assetBundleName: 
