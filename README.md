@@ -24,4 +24,9 @@ This is an example of VMG-PROV IMU 3-dof rendering. IMU information is syned and
 
 2.  Open this project with Unity editor and open the scene "scene".
 
+  ![alt text](https://github.com/VisionerTech/IMU_demo/blob/master/readme_images/snipaste_20170317_103901.png "scene")
+
+
 3.  Run the project and the camera would rotates as VMG-PROV headset.
+
+  ![alt text](https://github.com/VisionerTech/IMU_demo/blob/master/readme_images/snipaste_20170317_104111.png "run snap")
