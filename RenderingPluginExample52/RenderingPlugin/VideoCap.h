@@ -87,7 +87,7 @@ public:
 	//cv::Mat get_right_rgba();
 
 	//get imu data
-	std::vector<float> get_imu();
+	std::vector<std::vector<float>> get_imu();
 
 };
 

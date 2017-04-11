@@ -166,7 +166,7 @@ VideoSource::~VideoSource()
 
 
 
-vector<float> VideoSource::get_imu()
+vector<vector<float>> VideoSource::get_imu()
 {
 	if (src.empty())
 	{
@@ -177,6 +177,12 @@ vector<float> VideoSource::get_imu()
 
 	//vector of quaterions, always in w,x,y,z;
 	vector<float> q_vec;
+
+	//vector of aacceleration, in x y z, number of G
+	vector<float> acce_vec;
+
+	//a vector of vectors store both q_vec and acce_vec;
+	vector<vector<float>> retrun_vec;
 
 	Mat row_1 = src.row(0);
 
@@ -215,6 +221,65 @@ vector<float> VideoSource::get_imu()
 				unsigned char check_byte;
 				unsigned char I_prime_byte;
 
+				//check for the acce data
+				check_byte = row_1.at<cv::Vec3b>(0, i + (8 * 2))[0];
+				I_prime_byte = row_1.at<cv::Vec3b>(0, i + (8 * 2 + 1))[0];
+
+				check_odd_even(&check_byte, &I_prime_byte, &I2_prime);
+
+				//the 8th is 0xa0
+				if (I2_prime == 0xa0)
+				{
+					//9th and 10th is acce x
+					check_byte = row_1.at<cv::Vec3b>(0, i + (9 * 2))[0];
+					I_prime_byte = row_1.at<cv::Vec3b>(0, i + (9 * 2 + 1))[0];
+					unsigned char acce_x1;
+					check_odd_even(&check_byte, &I_prime_byte, &acce_x1);
+
+					check_byte = row_1.at<cv::Vec3b>(0, i + (10 * 2))[0];
+					I_prime_byte = row_1.at<cv::Vec3b>(0, i + (10 * 2 + 1))[0];
+					unsigned char acce_x2;
+					check_odd_even(&check_byte, &I_prime_byte, &acce_x2);
+
+					short acce_x_byte = acce_x2 << 8 | acce_x1;
+
+					//11th and 12th is acce y
+					check_byte = row_1.at<cv::Vec3b>(0, i + (11 * 2))[0];
+					I_prime_byte = row_1.at<cv::Vec3b>(0, i + (11 * 2 + 1))[0];
+					unsigned char acce_y1;
+					check_odd_even(&check_byte, &I_prime_byte, &acce_y1);
+
+					check_byte = row_1.at<cv::Vec3b>(0, i + (12 * 2))[0];
+					I_prime_byte = row_1.at<cv::Vec3b>(0, i + (12 * 2 + 1))[0];
+					unsigned char acce_y2;
+					check_odd_even(&check_byte, &I_prime_byte, &acce_y2);
+
+					short acce_y_byte = acce_y2 << 8 | acce_y1;
+
+					//13th and 14th is acce x
+					check_byte = row_1.at<cv::Vec3b>(0, i + (13 * 2))[0];
+					I_prime_byte = row_1.at<cv::Vec3b>(0, i + (13 * 2 + 1))[0];
+					unsigned char acce_z1;
+					check_odd_even(&check_byte, &I_prime_byte, &acce_z1);
+
+					check_byte = row_1.at<cv::Vec3b>(0, i + (14 * 2))[0];
+					I_prime_byte = row_1.at<cv::Vec3b>(0, i + (14 * 2 + 1))[0];
+					unsigned char acce_z2;
+					check_odd_even(&check_byte, &I_prime_byte, &acce_z2);
+
+					short acce_z_byte = acce_z2 << 8 | acce_z1;
+
+					float acce_x = acce_x_byte / 4096.0f;
+					float acce_y = acce_y_byte / 4096.0f;
+					float acce_z = acce_z_byte / 4096.0f;
+					
+					acce_vec.push_back(acce_x);
+					acce_vec.push_back(acce_y);
+					acce_vec.push_back(acce_z);
+				}
+
+
+				//30th to 45th is quaterion.
 				check_byte = row_1.at<cv::Vec3b>(0, i + (30 * 2))[0];
 				I_prime_byte = row_1.at<cv::Vec3b>(0, i + (30 * 2 + 1))[0];
 				unsigned char w_1;
@@ -370,7 +435,10 @@ vector<float> VideoSource::get_imu()
 
 	/*std::cout << float(clock() - begin_time) / (float)CLOCKS_PER_SEC << endl;*/
 
-	return q_vec;
+	retrun_vec.push_back(q_vec);
+	retrun_vec.push_back(acce_vec);
+
+	return retrun_vec;
 
 }
 

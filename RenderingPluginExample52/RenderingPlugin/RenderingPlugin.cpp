@@ -73,6 +73,8 @@ extern "C" void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API SetTimeFromUnity (flo
 // --------------------------------------------------------------------------
 // opencv video capture source.
 std::vector<float> imu_q_vec;
+std::vector<float> imu_acce_vec;
+std::vector<std::vector<float>> imu_vec_pack;
 VideoSource* g_video_cap_ptr;
 extern "C" bool UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API OpenWebCam()
 {
@@ -102,6 +104,18 @@ extern "C" UNITY_INTERFACE_EXPORT float* GetQuaterionVector()
 {
 	return imu_q_vec.data();
 }
+
+//get the length of imu acceleration vectors;
+extern "C" int UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API GetIMUAccelerationLength()
+{
+	return imu_acce_vec.size();
+}
+
+extern "C" UNITY_INTERFACE_EXPORT float* GetAccelerationVector()
+{
+	return imu_acce_vec.data();
+}
+
 
 
 // --------------------------------------------------------------------------
@@ -841,7 +855,10 @@ static void DoRendering (const float* worldMatrix, const float* identityMatrix, 
 		return;
 	}
 
-	imu_q_vec = g_video_cap_ptr->get_imu();
+	imu_vec_pack = g_video_cap_ptr->get_imu();
+
+	imu_q_vec = imu_vec_pack[0];
+	imu_acce_vec = imu_vec_pack[1];
 
 	// Does actual rendering of a simple triangle
 

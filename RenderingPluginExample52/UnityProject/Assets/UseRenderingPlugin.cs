@@ -87,7 +87,24 @@ public class UseRenderingPlugin : MonoBehaviour
 	#endif
 	private static extern IntPtr GetQuaterionVector();
 
+	//native function call for getting return imu acceleration vector length
+	#if UNITY_IPHONE && !UNITY_EDITOR
+	[DllImport ("__Internal")]
+	#else
+	[DllImport ("RenderingPlugin", EntryPoint="GetIMUAccelerationLength")]
+	#endif
+	private static extern int GetIMUAccelerationLength();
+
+	//native function for getting return imu quaterion array
+	#if UNITY_IPHONE && !UNITY_EDITOR
+	[DllImport ("__Internal")]
+	#else
+	[DllImport ("RenderingPlugin", EntryPoint="GetAccelerationVector")]
+	#endif
+	private static extern IntPtr GetAccelerationVector();
+
 	private float[] imu_q_array = new float[4];
+	private float[] imu_acce_array = new float[3];
 	public GameObject main_camera;
 
 	IEnumerator Start()
@@ -143,7 +160,7 @@ public class UseRenderingPlugin : MonoBehaviour
 
 
 			int quaterion_vec_length = GetIMUQuaterionLength ();
-			Debug.Log ("quaterion vector length" + quaterion_vec_length);
+//			Debug.Log ("quaterion vector length" + quaterion_vec_length);
 
 			if (quaterion_vec_length > 4) {
 				IntPtr ptr = GetQuaterionVector ();
@@ -158,6 +175,20 @@ public class UseRenderingPlugin : MonoBehaviour
 				main_camera.transform.rotation = imu_q;
 
 				main_camera.transform.Rotate (Vector3.right * -90.0f);
+			}
+
+
+			int acceleartion_vec_length = GetIMUAccelerationLength();
+//			Debug.Log ("acceleration vector length" + acceleartion_vec_length);
+
+			if (acceleartion_vec_length > 3) {
+				IntPtr ptr = GetAccelerationVector ();
+				Marshal.Copy (ptr, imu_acce_array, 0, 3);
+
+				Debug.Log ("x:" + imu_acce_array [0]);
+				Debug.Log ("y:" + imu_acce_array [1]);
+				Debug.Log ("z:" + imu_acce_array [2]);
+
 			}
         }
 	}
