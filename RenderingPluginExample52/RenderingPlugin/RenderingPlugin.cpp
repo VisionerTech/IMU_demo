@@ -864,207 +864,207 @@ static void DoRendering (const float* worldMatrix, const float* identityMatrix, 
 
 	#if SUPPORT_D3D9
 	// D3D9 case
-	if (s_DeviceType == kUnityGfxRendererD3D9)
-	{
-		// Transformation matrices
-		g_D3D9Device->SetTransform (D3DTS_WORLD, (const D3DMATRIX*)worldMatrix);
-		g_D3D9Device->SetTransform (D3DTS_VIEW, (const D3DMATRIX*)identityMatrix);
-		g_D3D9Device->SetTransform (D3DTS_PROJECTION, (const D3DMATRIX*)projectionMatrix);
+	//if (s_DeviceType == kUnityGfxRendererD3D9)
+	//{
+	//	// Transformation matrices
+	//	g_D3D9Device->SetTransform (D3DTS_WORLD, (const D3DMATRIX*)worldMatrix);
+	//	g_D3D9Device->SetTransform (D3DTS_VIEW, (const D3DMATRIX*)identityMatrix);
+	//	g_D3D9Device->SetTransform (D3DTS_PROJECTION, (const D3DMATRIX*)projectionMatrix);
 
-		// Vertex layout
-		g_D3D9Device->SetFVF (D3DFVF_XYZ|D3DFVF_DIFFUSE);
+	//	// Vertex layout
+	//	g_D3D9Device->SetFVF (D3DFVF_XYZ|D3DFVF_DIFFUSE);
 
-		// Texture stage states to output vertex color
-		g_D3D9Device->SetTextureStageState (0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-		g_D3D9Device->SetTextureStageState (0, D3DTSS_COLORARG1, D3DTA_CURRENT);
-		g_D3D9Device->SetTextureStageState (0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-		g_D3D9Device->SetTextureStageState (0, D3DTSS_ALPHAARG1, D3DTA_CURRENT);
-		g_D3D9Device->SetTextureStageState (1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-		g_D3D9Device->SetTextureStageState (1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+	//	// Texture stage states to output vertex color
+	//	g_D3D9Device->SetTextureStageState (0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+	//	g_D3D9Device->SetTextureStageState (0, D3DTSS_COLORARG1, D3DTA_CURRENT);
+	//	g_D3D9Device->SetTextureStageState (0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+	//	g_D3D9Device->SetTextureStageState (0, D3DTSS_ALPHAARG1, D3DTA_CURRENT);
+	//	g_D3D9Device->SetTextureStageState (1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+	//	g_D3D9Device->SetTextureStageState (1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
 
-		// Copy vertex data into our small dynamic vertex buffer. We could have used
-		// DrawPrimitiveUP just fine as well.
-		void* vbPtr;
-		g_D3D9DynamicVB->Lock (0, 0, &vbPtr, D3DLOCK_DISCARD);
-		memcpy (vbPtr, verts, sizeof(verts[0])*3);
-		g_D3D9DynamicVB->Unlock ();
-		g_D3D9Device->SetStreamSource (0, g_D3D9DynamicVB, 0, sizeof(MyVertex));
+	//	// Copy vertex data into our small dynamic vertex buffer. We could have used
+	//	// DrawPrimitiveUP just fine as well.
+	//	void* vbPtr;
+	//	g_D3D9DynamicVB->Lock (0, 0, &vbPtr, D3DLOCK_DISCARD);
+	//	memcpy (vbPtr, verts, sizeof(verts[0])*3);
+	//	g_D3D9DynamicVB->Unlock ();
+	//	g_D3D9Device->SetStreamSource (0, g_D3D9DynamicVB, 0, sizeof(MyVertex));
 
-		// Draw!
-		g_D3D9Device->DrawPrimitive (D3DPT_TRIANGLELIST, 0, 1);
+	//	// Draw!
+	//	g_D3D9Device->DrawPrimitive (D3DPT_TRIANGLELIST, 0, 1);
 
-		// Update native texture from code
-		if (g_TexturePointer)
-		{
-			IDirect3DTexture9* d3dtex = (IDirect3DTexture9*)g_TexturePointer;
-			D3DSURFACE_DESC desc;
-			d3dtex->GetLevelDesc (0, &desc);
-			D3DLOCKED_RECT lr;
-			d3dtex->LockRect (0, &lr, NULL, 0);
-			FillTextureFromCode (desc.Width, desc.Height, lr.Pitch, (unsigned char*)lr.pBits);
-			d3dtex->UnlockRect (0);
-		}
-	}
+	//	// Update native texture from code
+	//	if (g_TexturePointer)
+	//	{
+	//		IDirect3DTexture9* d3dtex = (IDirect3DTexture9*)g_TexturePointer;
+	//		D3DSURFACE_DESC desc;
+	//		d3dtex->GetLevelDesc (0, &desc);
+	//		D3DLOCKED_RECT lr;
+	//		d3dtex->LockRect (0, &lr, NULL, 0);
+	//		FillTextureFromCode (desc.Width, desc.Height, lr.Pitch, (unsigned char*)lr.pBits);
+	//		d3dtex->UnlockRect (0);
+	//	}
+	//}
 	#endif
 
 
 	#if SUPPORT_D3D11
 	// D3D11 case
-	if (s_DeviceType == kUnityGfxRendererD3D11 && EnsureD3D11ResourcesAreCreated())
-	{
-		ID3D11DeviceContext* ctx = NULL;
-		g_D3D11Device->GetImmediateContext (&ctx);
+	//if (s_DeviceType == kUnityGfxRendererD3D11 && EnsureD3D11ResourcesAreCreated())
+	//{
+	//	ID3D11DeviceContext* ctx = NULL;
+	//	g_D3D11Device->GetImmediateContext (&ctx);
 
-		// update constant buffer - just the world matrix in our case
-		ctx->UpdateSubresource (g_D3D11CB, 0, NULL, worldMatrix, 64, 0);
+	//	// update constant buffer - just the world matrix in our case
+	//	ctx->UpdateSubresource (g_D3D11CB, 0, NULL, worldMatrix, 64, 0);
 
-		// set shaders
-		ctx->VSSetConstantBuffers (0, 1, &g_D3D11CB);
-		ctx->VSSetShader (g_D3D11VertexShader, NULL, 0);
-		ctx->PSSetShader (g_D3D11PixelShader, NULL, 0);
+	//	// set shaders
+	//	ctx->VSSetConstantBuffers (0, 1, &g_D3D11CB);
+	//	ctx->VSSetShader (g_D3D11VertexShader, NULL, 0);
+	//	ctx->PSSetShader (g_D3D11PixelShader, NULL, 0);
 
-		// update vertex buffer
-		ctx->UpdateSubresource (g_D3D11VB, 0, NULL, verts, sizeof(verts[0])*3, 0);
+	//	// update vertex buffer
+	//	ctx->UpdateSubresource (g_D3D11VB, 0, NULL, verts, sizeof(verts[0])*3, 0);
 
-		// set input assembler data and draw
-		ctx->IASetInputLayout (g_D3D11InputLayout);
-		ctx->IASetPrimitiveTopology (D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		UINT stride = sizeof(MyVertex);
-		UINT offset = 0;
-		ctx->IASetVertexBuffers (0, 1, &g_D3D11VB, &stride, &offset);
-		ctx->Draw (3, 0);
+	//	// set input assembler data and draw
+	//	ctx->IASetInputLayout (g_D3D11InputLayout);
+	//	ctx->IASetPrimitiveTopology (D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//	UINT stride = sizeof(MyVertex);
+	//	UINT offset = 0;
+	//	ctx->IASetVertexBuffers (0, 1, &g_D3D11VB, &stride, &offset);
+	//	ctx->Draw (3, 0);
 
-		// update native texture from code
-		if (g_TexturePointer)
-		{
-			ID3D11Texture2D* d3dtex = (ID3D11Texture2D*)g_TexturePointer;
-			D3D11_TEXTURE2D_DESC desc;
-			d3dtex->GetDesc (&desc);
+	//	// update native texture from code
+	//	if (g_TexturePointer)
+	//	{
+	//		ID3D11Texture2D* d3dtex = (ID3D11Texture2D*)g_TexturePointer;
+	//		D3D11_TEXTURE2D_DESC desc;
+	//		d3dtex->GetDesc (&desc);
 
-			unsigned char* data = new unsigned char[desc.Width*desc.Height*4];
-			FillTextureFromCode (desc.Width, desc.Height, desc.Width*4, data);
-			ctx->UpdateSubresource (d3dtex, 0, NULL, data, desc.Width*4, 0);
-			delete[] data;
-		}
+	//		unsigned char* data = new unsigned char[desc.Width*desc.Height*4];
+	//		FillTextureFromCode (desc.Width, desc.Height, desc.Width*4, data);
+	//		ctx->UpdateSubresource (d3dtex, 0, NULL, data, desc.Width*4, 0);
+	//		delete[] data;
+	//	}
 
-		ctx->Release();
-	}
+	//	ctx->Release();
+	//}
 	#endif
 
 
 
-	#if SUPPORT_D3D12
-	// D3D12 case
-	if (s_DeviceType == kUnityGfxRendererD3D12)
-	{
-		ID3D12Device* device = s_D3D12->GetDevice();
-		ID3D12CommandQueue* queue = s_D3D12->GetCommandQueue();
+	//#if SUPPORT_D3D12
+	//// D3D12 case
+	//if (s_DeviceType == kUnityGfxRendererD3D12)
+	//{
+	//	ID3D12Device* device = s_D3D12->GetDevice();
+	//	ID3D12CommandQueue* queue = s_D3D12->GetCommandQueue();
 
-		// Wait on the previous job (example only - simplifies resource management)
-		if (s_D3D12Fence->GetCompletedValue() < s_D3D12FenceValue)
-		{
-			s_D3D12Fence->SetEventOnCompletion(s_D3D12FenceValue, s_D3D12Event);
-			WaitForSingleObject(s_D3D12Event, INFINITE);
-		}
-		
-		// Update native texture from code
-		if (g_TexturePointer)
-		{
-			ID3D12Resource* resource = (ID3D12Resource*)g_TexturePointer;
-			D3D12_RESOURCE_DESC desc = resource->GetDesc();
+	//	// Wait on the previous job (example only - simplifies resource management)
+	//	if (s_D3D12Fence->GetCompletedValue() < s_D3D12FenceValue)
+	//	{
+	//		s_D3D12Fence->SetEventOnCompletion(s_D3D12FenceValue, s_D3D12Event);
+	//		WaitForSingleObject(s_D3D12Event, INFINITE);
+	//	}
+	//	
+	//	// Update native texture from code
+	//	if (g_TexturePointer)
+	//	{
+	//		ID3D12Resource* resource = (ID3D12Resource*)g_TexturePointer;
+	//		D3D12_RESOURCE_DESC desc = resource->GetDesc();
 
-			// Begin a command list
-			s_D3D12CmdAlloc->Reset();
-			s_D3D12CmdList->Reset(s_D3D12CmdAlloc, nullptr);
+	//		// Begin a command list
+	//		s_D3D12CmdAlloc->Reset();
+	//		s_D3D12CmdList->Reset(s_D3D12CmdAlloc, nullptr);
 
-			// Fill data
-			const UINT64 kDataSize = desc.Width*desc.Height*4;
-			ID3D12Resource* upload = GetD3D12UploadResource(kDataSize);
-			void* mapped = NULL;
-			upload->Map(0, NULL, &mapped);
-			FillTextureFromCode(desc.Width, desc.Height, desc.Width*4, (unsigned char*)mapped);
-			upload->Unmap(0, NULL);
+	//		// Fill data
+	//		const UINT64 kDataSize = desc.Width*desc.Height*4;
+	//		ID3D12Resource* upload = GetD3D12UploadResource(kDataSize);
+	//		void* mapped = NULL;
+	//		upload->Map(0, NULL, &mapped);
+	//		FillTextureFromCode(desc.Width, desc.Height, desc.Width*4, (unsigned char*)mapped);
+	//		upload->Unmap(0, NULL);
 
-			D3D12_TEXTURE_COPY_LOCATION srcLoc = {};
-			srcLoc.pResource = upload;
-			srcLoc.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
-			device->GetCopyableFootprints(&desc, 0, 1, 0, &srcLoc.PlacedFootprint, nullptr, nullptr, nullptr);
+	//		D3D12_TEXTURE_COPY_LOCATION srcLoc = {};
+	//		srcLoc.pResource = upload;
+	//		srcLoc.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+	//		device->GetCopyableFootprints(&desc, 0, 1, 0, &srcLoc.PlacedFootprint, nullptr, nullptr, nullptr);
 
-			D3D12_TEXTURE_COPY_LOCATION dstLoc = {};
-			dstLoc.pResource = resource;
-			dstLoc.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
-			dstLoc.SubresourceIndex = 0;
+	//		D3D12_TEXTURE_COPY_LOCATION dstLoc = {};
+	//		dstLoc.pResource = resource;
+	//		dstLoc.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+	//		dstLoc.SubresourceIndex = 0;
 
-			// Queue data upload
-			const D3D12_RESOURCE_STATES kDesiredState = D3D12_RESOURCE_STATE_COPY_DEST;
-			D3D12_RESOURCE_STATES resourceState = kDesiredState;
-			s_D3D12->GetResourceState(resource, &resourceState); // Get resource state as it will be after all command lists Unity queued before this plugin call execute.
-			if (resourceState != kDesiredState)
-			{
-				D3D12_RESOURCE_BARRIER barrierDesc = {};
-				barrierDesc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-				barrierDesc.Transition.pResource = resource;
-				barrierDesc.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-				barrierDesc.Transition.StateBefore = resourceState;
-				barrierDesc.Transition.StateAfter = kDesiredState;
-				s_D3D12CmdList->ResourceBarrier(1, &barrierDesc);
-				s_D3D12->SetResourceState(resource, kDesiredState); // Set resource state as it will be after this command list is executed.
-			}
+	//		// Queue data upload
+	//		const D3D12_RESOURCE_STATES kDesiredState = D3D12_RESOURCE_STATE_COPY_DEST;
+	//		D3D12_RESOURCE_STATES resourceState = kDesiredState;
+	//		s_D3D12->GetResourceState(resource, &resourceState); // Get resource state as it will be after all command lists Unity queued before this plugin call execute.
+	//		if (resourceState != kDesiredState)
+	//		{
+	//			D3D12_RESOURCE_BARRIER barrierDesc = {};
+	//			barrierDesc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//			barrierDesc.Transition.pResource = resource;
+	//			barrierDesc.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	//			barrierDesc.Transition.StateBefore = resourceState;
+	//			barrierDesc.Transition.StateAfter = kDesiredState;
+	//			s_D3D12CmdList->ResourceBarrier(1, &barrierDesc);
+	//			s_D3D12->SetResourceState(resource, kDesiredState); // Set resource state as it will be after this command list is executed.
+	//		}
 
-			s_D3D12CmdList->CopyTextureRegion(&dstLoc, 0, 0, 0, &srcLoc, nullptr);
+	//		s_D3D12CmdList->CopyTextureRegion(&dstLoc, 0, 0, 0, &srcLoc, nullptr);
 
-			// Execute the command list
-			s_D3D12CmdList->Close();
-			ID3D12CommandList* lists[1] = { s_D3D12CmdList };
-			queue->ExecuteCommandLists(1, lists);
-		}
+	//		// Execute the command list
+	//		s_D3D12CmdList->Close();
+	//		ID3D12CommandList* lists[1] = { s_D3D12CmdList };
+	//		queue->ExecuteCommandLists(1, lists);
+	//	}
 
-		// Insert fence
-		++s_D3D12FenceValue;
-		queue->Signal(s_D3D12Fence, s_D3D12FenceValue);
-	}
-	#endif
+	//	// Insert fence
+	//	++s_D3D12FenceValue;
+	//	queue->Signal(s_D3D12Fence, s_D3D12FenceValue);
+	//}
+	//#endif
 
 
 
 	#if SUPPORT_OPENGL
 	// OpenGL case
-	if (s_DeviceType == kUnityGfxRendererOpenGL)
-	{
-		// Transformation matrices
-		glMatrixMode (GL_MODELVIEW);
-		glLoadMatrixf (worldMatrix);
-		glMatrixMode (GL_PROJECTION);
-		// Tweak the projection matrix a bit to make it match what identity
-		// projection would do in D3D case.
-		projectionMatrix[10] = 2.0f;
-		projectionMatrix[14] = -1.0f;
-		glLoadMatrixf (projectionMatrix);
+	//if (s_DeviceType == kUnityGfxRendererOpenGL)
+	//{
+	//	// Transformation matrices
+	//	glMatrixMode (GL_MODELVIEW);
+	//	glLoadMatrixf (worldMatrix);
+	//	glMatrixMode (GL_PROJECTION);
+	//	// Tweak the projection matrix a bit to make it match what identity
+	//	// projection would do in D3D case.
+	//	projectionMatrix[10] = 2.0f;
+	//	projectionMatrix[14] = -1.0f;
+	//	glLoadMatrixf (projectionMatrix);
 
-		// Vertex layout
-		glVertexPointer (3, GL_FLOAT, sizeof(verts[0]), &verts[0].x);
-		glEnableClientState (GL_VERTEX_ARRAY);
-		glColorPointer (4, GL_UNSIGNED_BYTE, sizeof(verts[0]), &verts[0].color);
-		glEnableClientState (GL_COLOR_ARRAY);
+	//	// Vertex layout
+	//	glVertexPointer (3, GL_FLOAT, sizeof(verts[0]), &verts[0].x);
+	//	glEnableClientState (GL_VERTEX_ARRAY);
+	//	glColorPointer (4, GL_UNSIGNED_BYTE, sizeof(verts[0]), &verts[0].color);
+	//	glEnableClientState (GL_COLOR_ARRAY);
 
-		// Draw!
-		glDrawArrays (GL_TRIANGLES, 0, 3);
+	//	// Draw!
+	//	glDrawArrays (GL_TRIANGLES, 0, 3);
 
-		// update native texture from code
-		if (g_TexturePointer)
-		{
-			GLuint gltex = (GLuint)(size_t)(g_TexturePointer);
-			glBindTexture (GL_TEXTURE_2D, gltex);
-			int texWidth, texHeight;
-			glGetTexLevelParameteriv (GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &texWidth);
-			glGetTexLevelParameteriv (GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &texHeight);
+	//	// update native texture from code
+	//	if (g_TexturePointer)
+	//	{
+	//		GLuint gltex = (GLuint)(size_t)(g_TexturePointer);
+	//		glBindTexture (GL_TEXTURE_2D, gltex);
+	//		int texWidth, texHeight;
+	//		glGetTexLevelParameteriv (GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &texWidth);
+	//		glGetTexLevelParameteriv (GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &texHeight);
 
-			unsigned char* data = new unsigned char[texWidth*texHeight*4];
-			FillTextureFromCode (texWidth, texHeight, texHeight*4, data);
-			glTexSubImage2D (GL_TEXTURE_2D, 0, 0, 0, texWidth, texHeight, GL_RGBA, GL_UNSIGNED_BYTE, data);
-			delete[] data;
-		}
-	}
+	//		unsigned char* data = new unsigned char[texWidth*texHeight*4];
+	//		FillTextureFromCode (texWidth, texHeight, texHeight*4, data);
+	//		glTexSubImage2D (GL_TEXTURE_2D, 0, 0, 0, texWidth, texHeight, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	//		delete[] data;
+	//	}
+	//}
 	#endif
 	
 	

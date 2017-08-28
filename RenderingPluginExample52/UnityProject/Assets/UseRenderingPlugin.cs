@@ -185,9 +185,9 @@ public class UseRenderingPlugin : MonoBehaviour
 				IntPtr ptr = GetAccelerationVector ();
 				Marshal.Copy (ptr, imu_acce_array, 0, 3);
 
-				Debug.Log ("x:" + imu_acce_array [0]);
-				Debug.Log ("y:" + imu_acce_array [1]);
-				Debug.Log ("z:" + imu_acce_array [2]);
+//				Debug.Log ("x:" + imu_acce_array [0]);
+//				Debug.Log ("y:" + imu_acce_array [1]);
+//				Debug.Log ("z:" + imu_acce_array [2]);
 
 			}
         }
